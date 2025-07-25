@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Menu, X, BookOpen } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -16,12 +18,16 @@ const navigation = [
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
+  const { data: session, status } = useSession()
 
   const isActive = (href: string) => {
-    if (href === '/') {
-      return pathname === href
-    }
+    if (href === '/') return pathname === href
     return pathname.startsWith(href)
+  }
+
+  const handleLogout = () => {
+    setIsMenuOpen(false)
+    signOut({ callbackUrl: '/login' })
   }
 
   return (
@@ -41,9 +47,7 @@ export default function Navbar() {
                 key={item.name}
                 href={item.href}
                 className={`text-sm font-medium transition-colors hover:text-blue-600 ${
-                  isActive(item.href)
-                    ? 'text-blue-600'
-                    : 'text-gray-600'
+                  isActive(item.href) ? 'text-blue-600' : 'text-gray-600'
                 }`}
               >
                 {item.name}
@@ -53,12 +57,22 @@ export default function Navbar() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/register">Sign Up</Link>
-            </Button>
+            {status === 'loading' ? null : session?.user ? (
+              <>
+                <Button variant="destructive" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/register">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -67,7 +81,7 @@ export default function Navbar() {
               variant="ghost"
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-expanded="false"
+              aria-expanded={isMenuOpen}
             >
               <span className="sr-only">Open main menu</span>
               {isMenuOpen ? (
@@ -97,22 +111,39 @@ export default function Navbar() {
                   {item.name}
                 </Link>
               ))}
+
               <div className="pt-4 pb-3 border-t border-gray-200">
                 <div className="space-y-1">
-                  <Link
-                    href="/login"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign Up
-                  </Link>
+                  {status === 'loading' ? null : session?.user ? (
+                    <>
+                      <div className="px-3 text-sm text-gray-600">
+                        Logged in as <strong>{session.user.name || session.user.email}</strong>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white bg-red-600 hover:bg-red-700"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/login"
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        href="/register"
+                        className="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

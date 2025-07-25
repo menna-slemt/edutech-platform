@@ -13,7 +13,6 @@ export default async function CourseDetailPage({ params }: Props) {
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-4">
-      <img src={course.thumbnail} alt={course.title} className="rounded-md" />
       <h1 className="text-3xl font-bold">{course.title}</h1>
       <p>{course.description}</p>
     </div>

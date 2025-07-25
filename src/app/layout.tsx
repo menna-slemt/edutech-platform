@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
+import SessionLayout from '@/components/SessionLayout'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = { 
+export const metadata: Metadata = {
   title: {
     default: 'EduPlatform - Learn Skills Online',
     template: '%s | EduPlatform'
@@ -41,11 +40,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <SessionLayout>{children}</SessionLayout>
       </body>
     </html>
   )

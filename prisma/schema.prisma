@@ -22,7 +22,8 @@ model User {
   image          String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-    courses   Course[] 
+  role      Role     @default(STUDENT) 
+  courses   Course[] 
 }
 
 model Course {
@@ -36,4 +37,7 @@ model Course {
   creator     User?    @relation(fields: [creatorId], references: [id])
   creatorId   String?
 }
-
+enum Role {
+  ADMIN
+  STUDENT
+}

@@ -1,25 +1,26 @@
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const body = await req.json();
-  const { title, description, thumbnail, featured } = body;
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return new Response("Forbidden", { status: 403 });
+  }
 
-const newCourse = await prisma.course.create({
-  data: {
-    title,
-    description,
-    thumbnail,
-    featured,
-    creatorId: session.user.id, 
-  },
-});
+  const { title, description, thumbnail, featured } = await req.json();
 
+  const newCourse = await prisma.course.create({
+    data: {
+      title,
+      description,
+      thumbnail,
+      featured,
+      creatorId: session.user.id,
+    },
+  });
 
   return Response.json(newCourse);
 }
