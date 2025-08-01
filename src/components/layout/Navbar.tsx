@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Menu, X, BookOpen } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { signOut } from 'next-auth/react'
+import UserProfile from './../user-profile'
+
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -56,24 +58,22 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            {status === 'loading' ? null : session?.user ? (
-              <>
-                <Button variant="destructive" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/register">Sign Up</Link>
-                </Button>
-              </>
-            )}
-          </div>
+<div className="hidden md:flex items-center space-x-4">
+  {status === 'loading' ? (
+    <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse" />
+  ) : session?.user ? (
+    <UserProfile />
+  ) : (
+    <>
+      <Button variant="ghost" asChild>
+        <Link href="/login">Login</Link>
+      </Button>
+      <Button asChild>
+        <Link href="/register">Sign Up</Link>
+      </Button>
+    </>
+  )}
+</div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
