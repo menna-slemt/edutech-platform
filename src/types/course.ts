@@ -1,3 +1,5 @@
+import { Level } from "@prisma/client";
+
 export interface Course {
   id: string;
   title: string;
@@ -8,11 +10,11 @@ export interface Course {
   price: number;
   rating: number;
   studentsCount: number;
-  level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  level:Level;
   createdAt: Date;
   creatorId: string | null;
-  creator: {
-    name: string;
+  creator?: {
+    name: string | null;
     email: string;
   } | null;
 }
@@ -24,7 +26,7 @@ export interface CreateCourseData {
   featured: boolean;
   duration: string;
   price: number;
-  level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  level:Level;
   creatorId: string;
 }
 
@@ -33,4 +35,11 @@ export interface PaginatedCourses {
   totalPages: number;
   totalCount: number;
   currentPage: number;
+}
+
+export interface PlatformStats {
+  totalCourses: number;
+  totalStudents: number;
+  totalInstructors: number;
+  averageRating: number;
 }

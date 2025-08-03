@@ -12,8 +12,9 @@ import UserProfile from './../user-profile'
 
 const navigation = [
   { name: 'Home', href: '/' },
+   { name: 'About', href: '/about' },
   { name: 'Courses', href: '/courses' },
-  { name: 'About', href: '/about' },
+ 
   { name: 'Contact', href: '/contact' },
 ]
 

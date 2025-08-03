@@ -1,19 +1,18 @@
-import { prisma } from "@/lib/prisma";
-import { CourseCard } from "@/components/CourseCard";
 
-export default async function HomePage() {
-  const featuredCourses = await prisma.course.findMany({
-    where: { featured: true },
-  });
+import { CourseService } from "@/lib/services/course-service";
+import { StatsService } from "@/lib/services/statsService";
+import HomePage from "@/components/HomePage";
+
+export default async function Home() {
+  const [featuredCourses, stats] = await Promise.all([
+    CourseService.getFeaturedCourses(6),
+    StatsService.getPlatformStats()
+  ]);
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold">Featured Courses</h1>
-      <div className="grid md:grid-cols-3 gap-4">
-        {featuredCourses.map((course) => (
-          <CourseCard key={course.id} course={course} />
-        ))}
-      </div>
-    </div>
+    <HomePage 
+      featuredCourses={featuredCourses} 
+      stats={stats} 
+    />
   );
 }
